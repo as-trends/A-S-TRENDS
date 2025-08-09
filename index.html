@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>A&S Trends — Rolex GMT-Master II</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+  :root{
+    --bg:#000;
+    --panel:#0f0f0f;
+    --gold:#d4af37;
+    --muted:#bfbfbf;
+    --maxwidth:1100px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:#fff;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    line-height:1.45;
+  }
+
+  header{
+    background:linear-gradient(180deg,#0b0b0b, #111);
+    padding:18px 16px;
+    text-align:center;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  header img{height:64px; max-width:220px; object-fit:contain;}
+
+  .container{
+    max-width:var(--maxwidth);
+    margin:26px auto;
+    padding:0 16px;
+  }
+
+  /* hero / gallery */
+  .gallery-grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:18px;
+    align-items:start;
+  }
+  @media(min-width:880px){
+    .gallery-grid{ grid-template-columns: 1fr 420px; gap:28px; }
+  }
+
+  .media-stack{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:center;
+  }
+  .media-stack img, .media-stack video{
+    width:100%;
+    max-width:820px;
+    border:4px solid var(--gold);
+    border-radius:12px;
+    background:#111;
+    display:block;
+  }
+  .thumb-row{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  .thumb{
+    width:110px; height:80px; overflow:hidden; border-radius:8px;
+    border:3px solid rgba(255,255,255,0.04);
+    cursor:pointer;
+    transition: transform .18s ease, box-shadow .18s;
+  }
+  .thumb img, .thumb video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .thumb:hover{ transform:translateY(-6px); box-shadow:0 8px 30px rgba(0,0,0,0.6); border-color:var(--gold); }
+
+  /* right column */
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:18px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.03);
+  }
+  .title{
+    font-size:1.35rem; font-weight:700; margin:0 0 8px 0;
+  }
+  .subtitle{ color:var(--muted); margin:0 0 12px 0; font-size:0.95rem; }
+
+  .price{
+    font-size:1.6rem; color:var(--gold); font-weight:800; margin:6px 0 14px;
+  }
+  .features{
+    text-align:left; margin:8px 0 12px; color:var(--muted);
+  }
+  .features li{ margin:8px 0; }
+
+  .qty-row{ display:flex; align-items:center; gap:12px; margin:14px 0; }
+  .qty-box{ display:flex; align-items:center; gap:8px; background:#0b0b0b; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.03);}
+  .qty-btn{ background:transparent; border:1px solid rgba(255,255,255,0.06); color:#fff; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:1.05rem;}
+  .qty-input{ width:56px; text-align:center; background:transparent; border:none; color:#fff; font-size:1.05rem;}
+
+  .total-line{ display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-weight:700; color:var(--muted); }
+  .total-cost{ color:var(--gold); font-size:1.25rem; font-weight:800; }
+
+  .actions{ display:flex; gap:12px; margin-top:16px; flex-wrap:wrap; }
+  .btn{
+    padding:12px 18px; border-radius:10px; text-decoration:none; font-weight:700; cursor:pointer; border:none;
+  }
+  .btn-pay{ background:var(--gold); color:#091010; }
+  .btn-ws{ background:#25D366; color:#fff; }
+  .trust-row{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; color:var(--muted); font-size:0.92rem; }
+
+  /* badges */
+  .badge{ background: rgba(255,255,255,0.03); padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.02);}
+
+  /* description and footer */
+  .desc{ margin:22px 0; color:var(--muted); max-width:780px; }
+
+  /* sticky mobile bar */
+  .sticky-buy{
+    display:none;
+    position:fixed;
+    left:0; right:0; bottom:12px;
+    padding:10px;
+    display:flex; gap:10px; justify-content:center; z-index:90;
+  }
+  .sticky-buy .btn{ flex:1; max-width:420px; }
+
+  @media(max-width:880px){
+    .thumb{ width:90px; height:66px; }
+    .gallery-grid{ padding-bottom:70px; }
+    .sticky-buy{ display:flex; padding:12px 16px; }
+  }
+
+  /* lightbox modal */
+  .lightbox{
+    position:fixed; inset:0; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; z-index:120;
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  .lightbox.open{ opacity:1; pointer-events:auto; }
+  .lightbox-content{ max-width:min(1200px,96%); width:100%; padding:16px; }
+  .lightbox-content img, .lightbox-content video{ width:100%; border-radius:10px; border:6px solid var(--gold); }
+  .lightbox-close{ position:absolute; top:16px; right:18px; background:transparent; border:2px solid #fff; color:#fff; padding:8px 12px; border-radius:8px; cursor:pointer; }
+
+  footer{ text-align:center; color:var(--muted); margin:36px 0 80px; }
+
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="A&S Trends">
+</header>
+
+<main class="container">
+  <div class="gallery-grid">
+
+    <!-- LEFT: media column -->
+    <div>
+      <div class="media-stack">
+        <!-- large main media (will be replaced by chosen thumb) -->
+        <div id="mainMediaWrap">
+          <!-- default show video first -->
+          <video id="mainVideo" autoplay muted loop playsinline controls>
+            <source src="watch.mp4" type="video/mp4">
+            Your browser does not support video.
+          </video>
+        </div>
+
+        <!-- thumbnails -->
+        <div class="thumb-row" id="thumbRow">
+          <div class="thumb" data-type="video" data-src="watch.mp4" title="Watch video">
+            <video muted playsinline loop>
+              <source src="watch.mp4" type="video/mp4">
+            </video>
+          </div>
+
+          <div class="thumb" data-type="img" data-src="rolex-gmt-master-ii-1.jpg" title="Front view">
+            <img src="rolex-gmt-master-ii-1.jpg" alt="">
+          </div>
+
+          <div class="thumb" data-type="img" data-src="rolex-gmt-master-ii-2.jpg" title="Side view">
+            <img src="rolex-gmt-master-ii-2.jpg" alt="">
+          </div>
+
+          <div class="thumb" data-type="img" data-src="rolex-gmt-master-ii-3.jpg" title="Close-up">
+            <img src="rolex-gmt-master-ii-3.jpg" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: product panel -->
+    <aside class="panel">
+      <div class="title">Rolex GMT-Master II</div>
+      <div class="subtitle">Classic • Dual Time Zone • Cerachrom Bezel</div>
+
+      <div class="price">₹<span id="priceVal">2550</span></div>
+
+      <ul class="features">
+        <li>Oystersteel case — robust & corrosion resistant</li>
+        <li>Bidirectional rotatable 24-hour Cerachrom bezel</li>
+        <li>Additional 24-hour hand for second time zone</li>
+        <li>Water-resistant to 100 meters & Swiss chronometer</li>
+      </ul>
+
+      <div class="qty-row">
+        <div style="font-weight:700;">Quantity</div>
+        <div class="qty-box" style="margin-left:auto;">
+          <button class="qty-btn" id="decBtn">−</button>
+          <input class="qty-input" id="qtyInput" type="number" min="1" value="1" />
+          <button class="qty-btn" id="incBtn">+</button>
+        </div>
+      </div>
+
+      <div class="total-line">
+        <div>Total</div>
+        <div class="total-cost">₹<span id="totalVal">2550</span></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-pay" id="payBtn">Pay Now (Razorpay)</button>
+        <a class="btn btn-ws" id="whatsappBtn" href="#" target="_blank">Buy on WhatsApp</a>
+      </div>
+
+      <div class="trust-row" style="margin-top:12px;">
+        <div class="badge">✅ 100% Authentic</div>
+        <div class="badge">🚚 Fast Shipping</div>
+        <div class="badge">🔒 Secure Checkout</div>
+      </div>
+    </aside>
+
+  </div>
+
+  <section class="desc">
+    <h2 style="margin:0 0 8px 0; color:#fff;">Rolex GMT-Master II – The Icon of Travel Timepieces</h2>
+    <p style="color:var(--muted); margin:0;">
+      The Rolex GMT-Master II is a symbol of sophistication and adventure, originally designed for international pilots. Featuring a dual time zone function, a distinctive two-color Cerachrom bezel, and a robust Oystersteel case, it is as functional as it is elegant. With a precision-engineered automatic movement and timeless design, it’s the perfect companion for both business and leisure travel.
+    </p>
+  </section>
+
+</main>
+
+<!-- Sticky mobile bar -->
+<div class="sticky-buy" id="stickyBuy">
+  <div style="flex:1; text-align:center; padding:10px 12px; color:#fff;">
+    <div style="font-size:0.95rem;">Rolex GMT-Master II</div>
+    <div style="color:var(--gold); font-weight:800; font-size:1.05rem;">₹<span id="totalValSticky">2550</span></div>
+  </div>
+  <a class="btn btn-ws" id="whatsappBtnSticky" href="#" target="_blank" style="align-self:center;">Buy</a>
+</div>
+
+<!-- Lightbox modal -->
+<div id="lightbox" class="lightbox" aria-hidden="true">
+  <button class="lightbox-close" id="lightboxClose">Close</button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+</div>
+
+<footer>
+  © <span id="year"></span> A&S Trends — All rights reserved.
+</footer>
+
+<script>
+  // Basic product data
+  const PRICE = 2550;
+  const PHONE = '+918780583589'; // your WhatsApp number
+
+  // DOM elements
+  const qtyInput = document.getElementById('qtyInput');
+  const decBtn = document.getElementById('decBtn');
+  const incBtn = document.getElementById('incBtn');
+  const totalVal = document.getElementById('totalVal');
+  const totalValSticky = document.getElementById('totalValSticky');
+  const whatsappBtn = document.getElementById('whatsappBtn');
+  const whatsappBtnSticky = document.getElementById('whatsappBtnSticky');
+  const payBtn = document.getElementById('payBtn');
+
+  // initialize
+  function updateTotals(){
+    let q = parseInt(qtyInput.value) || 1;
+    if(q < 1) q = 1;
+    const total = PRICE * q;
+    totalVal.textContent = total.toLocaleString('en-IN');
+    totalValSticky.textContent = total.toLocaleString('en-IN');
+    // update WhatsApp link
+    const message = `Hello, I want to buy *Rolex GMT-Master II*\\nQuantity: ${q}\\nTotal: ₹${total}\\nName: \\nAddress: `;
+    const url = `https://wa.me/${PHONE.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(message)}`;
+    whatsappBtn.href = url;
+    whatsappBtnSticky.href = url;
+  }
+
+  // events
+  decBtn.addEventListener('click', ()=> { qtyInput.value = Math.max(1, (parseInt(qtyInput.value)||1) - 1); updateTotals(); });
+  incBtn.addEventListener('click', ()=> { qtyInput.value = (parseInt(qtyInput.value)||1) + 1; updateTotals(); });
+  qtyInput.addEventListener('change', ()=> updateTotals());
+  qtyInput.addEventListener('input', ()=> updateTotals());
+
+  // lightbox (enlarge media)
+  const thumbRow = document.getElementById('thumbRow');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxContent = document.getElementById('lightboxContent');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  thumbRow.addEventListener('click', (e)=>{
+    const t = e.target.closest('.thumb');
+    if(!t) return;
+    const type = t.getAttribute('data-type');
+    const src = t.getAttribute('data-src');
+    openLightbox(type, src);
+  });
+
+  function openLightbox(type, src){
+    lightboxContent.innerHTML = '';
+    if(type === 'video'){
+      const v = document.createElement('video');
+      v.controls = true;
+      v.autoplay = true;
+      v.loop = false;
+      v.src = src;
+      v.style.borderRadius = '10px';
+      lightboxContent.appendChild(v);
+    } else {
+      const img = document.createElement('img');
+      img.src = src;
+      lightboxContent.appendChild(img);
+    }
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden','false');
+  }
+  lightboxClose.addEventListener('click', ()=> { lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden','true'); lightboxContent.innerHTML=''; });
+  lightbox.addEventListener('click', (e)=> { if(e.target === lightbox) { lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden','true'); lightboxContent.innerHTML=''; } });
+
+  // clicking a thumb also swaps main media
+  document.querySelectorAll('.thumb').forEach(t=>{
+    t.addEventListener('click', (ev)=>{
+      ev.preventDefault();
+      const type = t.getAttribute('data-type');
+      const src = t.getAttribute('data-src');
+      const mainWrap = document.getElementById('mainMediaWrap');
+      mainWrap.innerHTML = '';
+      if(type === 'video'){
+        const v = document.createElement('video');
+        v.autoplay = true; v.muted = true; v.loop = true; v.playsInline = true; v.controls = true;
+        v.style.width = '100%'; v.style.borderRadius = '12px';
+        const s = document.createElement('source'); s.src = src; s.type = 'video/mp4';
+        v.appendChild(s);
+        mainWrap.appendChild(v);
+      } else {
+        const img = document.createElement('img');
+        img.src = src; img.alt = '';
+        img.style.width = '100%';
+        img.style.borderRadius = '12px';
+        mainWrap.appendChild(img);
+      }
+    });
+  });
+
+  // Razorpay placeholder - integrate your keys here when ready
+  payBtn.addEventListener('click', ()=> {
+    alert('Payment integration: Razorpay/other should be added here.\\n\\nOption: create a Razorpay Payment Link or integrate Checkout API to take online payments.');
+    // Example: If you create a Razorpay payment link, you can do:
+    // window.open('https://rzp.io/i/yourPaymentLinkId', '_blank');
+  });
+
+  // initial update
+  updateTotals();
+
+  // set year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // show/hide sticky buy on mobile
+  function updateSticky(){
+    const sb = document.getElementById('stickyBuy');
+    if(window.innerWidth < 880) sb.style.display = 'flex'; else sb.style.display = 'none';
+  }
+  updateSticky();
+  window.addEventListener('resize', updateSticky);
+</script>
+
+</body>
+</html>
